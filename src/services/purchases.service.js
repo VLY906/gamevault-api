@@ -1,192 +1,214 @@
+
 const purchasesRepository = require('../repositories/purchases.repository');
 const usersRepository = require('../repositories/users.repository');
 const gamesRepository = require('../repositories/games.repository');
 
+const VALID_STATUSES = ['completed', 'pending', 'cancelled'];
+
+function createError(message, statusCode) {
+    const error = new Error(message);
+    error.statusCode = statusCode;
+    return error;
+}
+
+function validatePositiveInteger(value, fieldName) {
+    if (
+        value === undefined ||
+        value === null ||
+        value === '' ||
+        !Number.isInteger(Number(value)) ||
+        Number(value) <= 0
+    ) {
+        throw createError(
+            `${fieldName} debe ser un entero positivo`,
+            400
+        );
+    }
+
+    return Number(value);
+}
+
+function validateStatus(status, required = false) {
+    if (!status && !required) {
+        return 'completed';
+    }
+
+    if (!VALID_STATUSES.includes(status)) {
+        throw createError(
+            'status debe ser completed, pending o cancelled',
+            400
+        );
+    }
+
+    return status;
+}
+
+async function validateItems(items) {
+    if (!Array.isArray(items) || items.length === 0) {
+        throw createError(
+            'items debe ser un arreglo con al menos un videojuego',
+            400
+        );
+    }
+
+    const validatedItems = [];
+
+    for (const item of items) {
+        if (!item || typeof item !== 'object') {
+            throw createError(
+                'Cada elemento de items debe ser un objeto válido',
+                400
+            );
+        }
+
+        const gameId = validatePositiveInteger(
+            item.game_id,
+            'game_id'
+        );
+
+        const game = await gamesRepository.findById(gameId);
+
+        if (!game) {
+            throw createError(
+                `El videojuego con ID ${gameId} no existe`,
+                404
+            );
+        }
+
+        validatedItems.push({ game_id: gameId });
+    }
+
+    return validatedItems;
+}
+
 async function getAllPurchases() {
-    return await purchasesRepository.findAll();
+    return purchasesRepository.findAll();
 }
 
 async function getPurchaseById(id) {
-    const purchase = await purchasesRepository.findById(id);
+    const purchaseId = validatePositiveInteger(id, 'id');
+    const purchase = await purchasesRepository.findById(purchaseId);
 
     if (!purchase) {
-        const error = new Error('Compra no encontrada');
-        error.statusCode = 404;
-        throw error;
+        throw createError('Compra no encontrada', 404);
     }
 
     return purchase;
 }
 
 async function getPurchasesByUserId(userId) {
-    const user = await usersRepository.findById(userId);
+    const validatedUserId = validatePositiveInteger(
+        userId,
+        'userId'
+    );
+
+    const user = await usersRepository.findById(validatedUserId);
 
     if (!user) {
-        const error = new Error('Usuario no encontrado');
-        error.statusCode = 404;
-        throw error;
+        throw createError('Usuario no encontrado', 404);
     }
 
-    return await purchasesRepository.findByUserId(userId);
+    return purchasesRepository.findByUserId(validatedUserId);
 }
 
 async function getSalesByDate(date) {
-    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-        const error = new Error(
-            'La fecha es obligatoria y debe tener formato YYYY-MM-DD'
+    if (
+        typeof date !== 'string' ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(date)
+    ) {
+        throw createError(
+            'La fecha es obligatoria y debe tener formato YYYY-MM-DD',
+            400
         );
-        error.statusCode = 400;
-        throw error;
     }
 
-    const parsedDate = new Date(`${date}T00:00:00Z`);
+    const parsedDate = new Date(`${date}T00:00:00.000Z`);
 
     if (
         Number.isNaN(parsedDate.getTime()) ||
         parsedDate.toISOString().slice(0, 10) !== date
     ) {
-        const error = new Error('La fecha indicada no es válida');
-        error.statusCode = 400;
-        throw error;
+        throw createError('La fecha indicada no es válida', 400);
     }
 
-    return await purchasesRepository.findSalesByDate(date);
+    const sales = await purchasesRepository.findSalesByDate(date);
+
+    const totalSales = sales.reduce(
+        (total, sale) => total + Number(sale.amount),
+        0
+    );
+
+    return {
+        date,
+        total_sales: Number(totalSales.toFixed(2)),
+        total_transactions: new Set(
+            sales.map((sale) => sale.purchase_id)
+        ).size,
+        sales
+    };
 }
 
 async function createPurchase(purchaseData) {
-    const { user_id, game_id, price_paid, status } = purchaseData;
+    const { user_id, items, status } = purchaseData;
 
-    if (!user_id || !game_id || price_paid === undefined) {
-        const error = new Error(
-            'Los campos user_id, game_id y price_paid son obligatorios'
-        );
-        error.statusCode = 400;
-        throw error;
-    }
+    const userId = validatePositiveInteger(user_id, 'user_id');
+    const purchaseStatus = validateStatus(status);
 
-    if (!Number.isInteger(Number(user_id)) || Number(user_id) <= 0) {
-        const error = new Error('user_id debe ser un entero positivo');
-        error.statusCode = 400;
-        throw error;
-    }
-
-    if (!Number.isInteger(Number(game_id)) || Number(game_id) <= 0) {
-        const error = new Error('game_id debe ser un entero positivo');
-        error.statusCode = 400;
-        throw error;
-    }
-
-    if (!Number.isFinite(Number(price_paid)) || Number(price_paid) < 0) {
-        const error = new Error(
-            'price_paid debe ser un número mayor o igual a cero'
-        );
-        error.statusCode = 400;
-        throw error;
-    }
-
-    const user = await usersRepository.findById(user_id);
+    const user = await usersRepository.findById(userId);
 
     if (!user) {
-        const error = new Error('El usuario indicado no existe');
-        error.statusCode = 404;
-        throw error;
+        throw createError('El usuario indicado no existe', 404);
     }
 
-    const game = await gamesRepository.findById(game_id);
+    const validatedItems = await validateItems(items);
 
-    if (!game) {
-        const error = new Error('El videojuego indicado no existe');
-        error.statusCode = 404;
-        throw error;
-    }
-
-    const validStatuses = ['completed', 'pending', 'cancelled'];
-    const purchaseStatus = status || 'completed';
-
-    if (!validStatuses.includes(purchaseStatus)) {
-        const error = new Error(
-            'status debe ser completed, pending o cancelled'
-        );
-        error.statusCode = 400;
-        throw error;
-    }
-
-    return await purchasesRepository.create({
-        user_id: Number(user_id),
-        game_id: Number(game_id),
-        price_paid: Number(price_paid),
+    return purchasesRepository.create({
+        user_id: userId,
+        items: validatedItems,
         status: purchaseStatus
     });
 }
 
 async function updatePurchase(id, purchaseData) {
-    await getPurchaseById(id);
+    const purchaseId = validatePositiveInteger(id, 'id');
 
-    const { user_id, game_id, price_paid, status } = purchaseData;
+    await getPurchaseById(purchaseId);
 
-    if (!user_id || !game_id || price_paid === undefined || !status) {
-        const error = new Error(
-            'user_id, game_id, price_paid y status son obligatorios'
-        );
-        error.statusCode = 400;
-        throw error;
+    const { user_id, items, status } = purchaseData;
+
+    const userId = validatePositiveInteger(user_id, 'user_id');
+
+    if (status === undefined || status === null || status === '') {
+        throw createError('status es obligatorio', 400);
     }
 
-    if (!Number.isInteger(Number(user_id)) || Number(user_id) <= 0) {
-        const error = new Error('user_id debe ser un entero positivo');
-        error.statusCode = 400;
-        throw error;
-    }
+    const purchaseStatus = validateStatus(status, true);
 
-    if (!Number.isInteger(Number(game_id)) || Number(game_id) <= 0) {
-        const error = new Error('game_id debe ser un entero positivo');
-        error.statusCode = 400;
-        throw error;
-    }
-
-    if (!Number.isFinite(Number(price_paid)) || Number(price_paid) < 0) {
-        const error = new Error(
-            'price_paid debe ser un número mayor o igual a cero'
-        );
-        error.statusCode = 400;
-        throw error;
-    }
-
-    if (!['completed', 'pending', 'cancelled'].includes(status)) {
-        const error = new Error(
-            'status debe ser completed, pending o cancelled'
-        );
-        error.statusCode = 400;
-        throw error;
-    }
-
-    const user = await usersRepository.findById(user_id);
+    const user = await usersRepository.findById(userId);
 
     if (!user) {
-        const error = new Error('El usuario indicado no existe');
-        error.statusCode = 404;
-        throw error;
+        throw createError('El usuario indicado no existe', 404);
     }
 
-    const game = await gamesRepository.findById(game_id);
+    let validatedItems;
 
-    if (!game) {
-        const error = new Error('El videojuego indicado no existe');
-        error.statusCode = 404;
-        throw error;
+    if (items !== undefined) {
+        validatedItems = await validateItems(items);
     }
 
-    return await purchasesRepository.update(id, {
-        user_id: Number(user_id),
-        game_id: Number(game_id),
-        price_paid: Number(price_paid),
-        status
+    return purchasesRepository.update(purchaseId, {
+        user_id: userId,
+        items: validatedItems,
+        status: purchaseStatus
     });
 }
 
 async function deletePurchase(id) {
-    await getPurchaseById(id);
-    return await purchasesRepository.remove(id);
+    const purchaseId = validatePositiveInteger(id, 'id');
+
+    await getPurchaseById(purchaseId);
+
+    return purchasesRepository.remove(purchaseId);
 }
 
 module.exports = {

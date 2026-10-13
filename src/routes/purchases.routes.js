@@ -1,6 +1,14 @@
+
 const express = require('express');
 const router = express.Router();
 const purchasesController = require('../controllers/purchases.controller');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Compras
+ *   description: Operaciones para gestionar compras y consultar ventas
+ */
 
 /**
  * @swagger
@@ -11,8 +19,11 @@ const purchasesController = require('../controllers/purchases.controller');
  *     responses:
  *       200:
  *         description: Lista de compras obtenida correctamente
+ *       500:
+ *         description: Error interno del servidor
+ *
  *   post:
- *     summary: Registrar una compra
+ *     summary: Registrar una compra con uno o varios videojuegos
  *     tags: [Compras]
  *     requestBody:
  *       required: true
@@ -22,28 +33,40 @@ const purchasesController = require('../controllers/purchases.controller');
  *             type: object
  *             required:
  *               - user_id
- *               - game_id
- *               - price_paid
+ *               - items
  *             properties:
  *               user_id:
  *                 type: integer
  *                 example: 2
- *               game_id:
- *                 type: integer
- *                 example: 4
- *               price_paid:
- *                 type: number
- *                 example: 59.99
+ *               items:
+ *                 type: array
+ *                 minItems: 1
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - game_id
+ *                   properties:
+ *                     game_id:
+ *                       type: integer
+ *                       example: 4
  *               status:
  *                 type: string
  *                 enum: [completed, pending, cancelled]
+ *                 default: completed
  *                 example: completed
  *     responses:
  *       201:
  *         description: Compra registrada correctamente
  *       400:
  *         description: Datos inválidos
- *
+ *       404:
+ *         description: Usuario o videojuego no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+
+/**
+ * @swagger
  * /purchases/sales-by-date:
  *   get:
  *     summary: Consultar ventas completadas por fecha
@@ -62,7 +85,12 @@ const purchasesController = require('../controllers/purchases.controller');
  *         description: Ventas y total recaudado en la fecha indicada
  *       400:
  *         description: Fecha ausente o inválida
- *
+ *       500:
+ *         description: Error interno del servidor
+ */
+
+/**
+ * @swagger
  * /purchases/user/{userId}:
  *   get:
  *     summary: Obtener las compras de un usuario
@@ -76,9 +104,14 @@ const purchasesController = require('../controllers/purchases.controller');
  *     responses:
  *       200:
  *         description: Compras del usuario obtenidas correctamente
+ *       400:
+ *         description: Identificador inválido
  *       404:
  *         description: Usuario no encontrado
- *
+ */
+
+/**
+ * @swagger
  * /purchases/{id}:
  *   get:
  *     summary: Obtener una compra por ID
@@ -92,10 +125,13 @@ const purchasesController = require('../controllers/purchases.controller');
  *     responses:
  *       200:
  *         description: Compra encontrada
+ *       400:
+ *         description: Identificador inválido
  *       404:
  *         description: Compra no encontrada
+ *
  *   put:
- *     summary: Actualizar una compra
+ *     summary: Actualizar una compra y sus elementos
  *     tags: [Compras]
  *     parameters:
  *       - in: path
@@ -111,19 +147,22 @@ const purchasesController = require('../controllers/purchases.controller');
  *             type: object
  *             required:
  *               - user_id
- *               - game_id
- *               - price_paid
  *               - status
  *             properties:
  *               user_id:
  *                 type: integer
  *                 example: 2
- *               game_id:
- *                 type: integer
- *                 example: 4
- *               price_paid:
- *                 type: number
- *                 example: 59.99
+ *               items:
+ *                 type: array
+ *                 minItems: 1
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - game_id
+ *                   properties:
+ *                     game_id:
+ *                       type: integer
+ *                       example: 4
  *               status:
  *                 type: string
  *                 enum: [completed, pending, cancelled]
@@ -134,7 +173,8 @@ const purchasesController = require('../controllers/purchases.controller');
  *       400:
  *         description: Datos inválidos
  *       404:
- *         description: Compra no encontrada
+ *         description: Compra, usuario o videojuego no encontrado
+ *
  *   delete:
  *     summary: Eliminar una compra
  *     tags: [Compras]
@@ -147,18 +187,19 @@ const purchasesController = require('../controllers/purchases.controller');
  *     responses:
  *       200:
  *         description: Compra eliminada correctamente
+ *       400:
+ *         description: Identificador inválido
  *       404:
  *         description: Compra no encontrada
  */
 
 router.get('/', purchasesController.getAllPurchases);
 
-// Esta ruta debe ir antes de /:id.
+// Las rutas específicas deben declararse antes de /:id.
 router.get('/sales-by-date', purchasesController.getSalesByDate);
-
 router.get('/user/:userId', purchasesController.getPurchasesByUserId);
-router.get('/:id', purchasesController.getPurchaseById);
 
+router.get('/:id', purchasesController.getPurchaseById);
 router.post('/', purchasesController.createPurchase);
 router.put('/:id', purchasesController.updatePurchase);
 router.delete('/:id', purchasesController.deletePurchase);
