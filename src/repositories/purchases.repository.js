@@ -1,4 +1,4 @@
-
+﻿
 const pool = require('../config/db');
 
 async function findAll() {
@@ -23,7 +23,7 @@ async function findAll() {
                 )
             END AS items
         FROM purchase
-        INNER JOIN user ON user.id = purchase.user_id
+        INNER JOIN \`user\` ON user.id = purchase.user_id
         LEFT JOIN purchase_item
             ON purchase_item.purchase_id = purchase.id
         LEFT JOIN game ON game.id = purchase_item.game_id
@@ -61,7 +61,7 @@ async function findById(id) {
                 )
             END AS items
         FROM purchase
-        INNER JOIN user ON user.id = purchase.user_id
+        INNER JOIN \`user\` ON user.id = purchase.user_id
         LEFT JOIN purchase_item
             ON purchase_item.purchase_id = purchase.id
         LEFT JOIN game ON game.id = purchase_item.game_id
@@ -77,6 +77,7 @@ async function findById(id) {
     return rows[0] || null;
 }
 
+
 async function findByUserId(userId) {
     const [rows] = await pool.query(`
         SELECT
@@ -86,11 +87,23 @@ async function findByUserId(userId) {
             purchase.purchased_at,
             purchase.status,
             COALESCE(SUM(purchase_item.price_paid), 0) AS total_amount,
-            COUNT(purchase_item.id) AS item_count
+            COUNT(purchase_item.id) AS item_count,
+            CASE
+                WHEN COUNT(purchase_item.id) = 0 THEN JSON_ARRAY()
+                ELSE JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'item_id', purchase_item.id,
+                        'game_id', game.id,
+                        'game_name', game.name,
+                        'price_paid', purchase_item.price_paid
+                    )
+                )
+            END AS items
         FROM purchase
-        INNER JOIN user ON user.id = purchase.user_id
+        INNER JOIN \`user\` ON user.id = purchase.user_id
         LEFT JOIN purchase_item
             ON purchase_item.purchase_id = purchase.id
+        LEFT JOIN game ON game.id = purchase_item.game_id
         WHERE purchase.user_id = ?
         GROUP BY
             purchase.id,
@@ -103,6 +116,7 @@ async function findByUserId(userId) {
 
     return rows;
 }
+
 
 async function findSalesByDate(date) {
     const [rows] = await pool.query(`
