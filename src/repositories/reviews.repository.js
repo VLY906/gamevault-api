@@ -3,7 +3,7 @@ const pool = require('../config/db');
 
 async function findAll() {
     const [rows] = await pool.query(
-        'SELECT * FROM reviews ORDER BY id DESC'
+        'SELECT * FROM `review` ORDER BY id DESC'
     );
 
     return rows;
@@ -11,16 +11,16 @@ async function findAll() {
 
 async function findById(id) {
     const [rows] = await pool.query(
-        'SELECT * FROM reviews WHERE id = ?',
+        'SELECT * FROM `review` WHERE id = ?',
         [id]
     );
 
-    return rows[0];
+    return rows[0] || null;
 }
 
 async function findByUserId(userId) {
     const [rows] = await pool.query(
-        'SELECT * FROM reviews WHERE user_id = ? ORDER BY id DESC',
+        'SELECT * FROM `review` WHERE user_id = ? ORDER BY id DESC',
         [userId]
     );
 
@@ -29,7 +29,7 @@ async function findByUserId(userId) {
 
 async function findByGameId(gameId) {
     const [rows] = await pool.query(
-        'SELECT * FROM reviews WHERE game_id = ? ORDER BY id DESC',
+        'SELECT * FROM `review` WHERE game_id = ? ORDER BY id DESC',
         [gameId]
     );
 
@@ -46,9 +46,9 @@ async function create(reviewData) {
     } = reviewData;
 
     const [result] = await pool.query(
-        `INSERT INTO reviews
-        (user_id, game_id, rating, comment, hours_played)
-        VALUES (?, ?, ?, ?, ?)`,
+        `INSERT INTO \`review\`
+            (user_id, game_id, rating, comment, hours_played)
+         VALUES (?, ?, ?, ?, ?)`,
         [
             user_id,
             game_id,
@@ -70,11 +70,11 @@ async function update(id, reviewData) {
         hours_played
     } = reviewData;
 
-    await pool.query(
-        `UPDATE reviews
-        SET user_id = ?, game_id = ?, rating = ?,
-            comment = ?, hours_played = ?
-        WHERE id = ?`,
+    const [result] = await pool.query(
+        `UPDATE \`review\`
+         SET user_id = ?, game_id = ?, rating = ?,
+             comment = ?, hours_played = ?
+         WHERE id = ?`,
         [
             user_id,
             game_id,
@@ -85,12 +85,16 @@ async function update(id, reviewData) {
         ]
     );
 
+    if (result.affectedRows === 0) {
+        return findById(id);
+    }
+
     return findById(id);
 }
 
 async function remove(id) {
     const [result] = await pool.query(
-        'DELETE FROM reviews WHERE id = ?',
+        'DELETE FROM `review` WHERE id = ?',
         [id]
     );
 
