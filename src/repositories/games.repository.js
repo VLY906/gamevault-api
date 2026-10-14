@@ -1,8 +1,9 @@
+
 const pool = require('../config/db');
 
 async function findAll() {
     const [rows] = await pool.query(
-        'SELECT * FROM games ORDER BY id ASC'
+        'SELECT * FROM `game` ORDER BY id ASC'
     );
 
     return rows;
@@ -10,7 +11,7 @@ async function findAll() {
 
 async function findById(id) {
     const [rows] = await pool.query(
-        'SELECT * FROM games WHERE id = ?',
+        'SELECT * FROM `game` WHERE id = ?',
         [id]
     );
 
@@ -19,7 +20,7 @@ async function findById(id) {
 
 async function findByGenre(genre) {
     const [rows] = await pool.query(
-        'SELECT * FROM games WHERE LOWER(genre) = LOWER(?) ORDER BY id ASC',
+        'SELECT * FROM `game` WHERE LOWER(genre) = LOWER(?) ORDER BY id ASC',
         [genre]
     );
 
@@ -30,7 +31,7 @@ async function create(gameData) {
     const { name, price, genre, age_rating, description } = gameData;
 
     const [result] = await pool.query(
-        `INSERT INTO games
+        `INSERT INTO \`game\`
             (name, price, genre, age_rating, description)
          VALUES (?, ?, ?, ?, ?)`,
         [name, price, genre, age_rating, description]
@@ -45,19 +46,23 @@ async function create(gameData) {
 async function update(id, gameData) {
     const { name, price, genre, age_rating, description } = gameData;
 
-    await pool.query(
-        `UPDATE games
+    const [result] = await pool.query(
+        `UPDATE \`game\`
          SET name = ?, price = ?, genre = ?, age_rating = ?, description = ?
          WHERE id = ?`,
         [name, price, genre, age_rating, description, id]
     );
 
-    return { id, ...gameData };
+    if (result.affectedRows === 0) {
+        return findById(id);
+    }
+
+    return findById(id);
 }
 
 async function remove(id) {
     const [result] = await pool.query(
-        'DELETE FROM games WHERE id = ?',
+        'DELETE FROM `game` WHERE id = ?',
         [id]
     );
 

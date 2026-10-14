@@ -1,3 +1,4 @@
+
 const reviewsRepository = require('../repositories/reviews.repository');
 const purchasesRepository = require('../repositories/purchases.repository');
 const usersRepository = require('../repositories/users.repository');
@@ -97,8 +98,11 @@ async function validateReviewData(reviewData) {
 
     const hasPurchasedGame = purchases.some(
         purchase =>
-            Number(purchase.game_id) === Number(game_id) &&
-            purchase.status === 'completed'
+            purchase.status === 'completed' &&
+            Array.isArray(purchase.items) &&
+            purchase.items.some(
+                item => Number(item.game_id) === Number(game_id)
+            )
     );
 
     if (!hasPurchasedGame) {
