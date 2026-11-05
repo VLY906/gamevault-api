@@ -1,0 +1,959 @@
+
+/* =====================================
+   GAMEVAULT - ESTILOS GENERALES
+===================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --background: #090b12;
+    --surface: #121622;
+    --surface-light: #1b2130;
+    --primary: #7657ff;
+    --primary-hover: #6242ed;
+    --text: #ffffff;
+    --text-muted: #a3a9b8;
+    --border: #292f40;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--background);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+/* =====================================
+   HEADER Y NAVEGACIÓN
+===================================== */
+
+.header {
+    width: 100%;
+    min-height: 82px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0d1019;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: var(--primary);
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+}
+
+.navigation a {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.navigation a:hover {
+    color: var(--primary);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.login-button,
+.register-button {
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.login-button {
+    border: 1px solid var(--border);
+    color: white;
+}
+
+.login-button:hover {
+    border-color: var(--primary);
+}
+
+.register-button {
+    background: var(--primary);
+    color: white;
+}
+
+.register-button:hover,
+.primary-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* =====================================
+   PORTADA PRINCIPAL
+===================================== */
+
+.hero {
+    min-height: 510px;
+    padding: 100px 9%;
+    display: flex;
+    align-items: center;
+    background:
+        radial-gradient(ellipse at 80% 50%, rgba(118, 87, 255, 0.22), transparent 45%),
+        linear-gradient(110deg, #111522, #090b12);
+    border-bottom: 1px solid var(--border);
+}
+
+.hero-content {
+    max-width: 650px;
+}
+
+.eyebrow {
+    display: inline-block;
+    color: #a995ff;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -3px;
+    margin-bottom: 22px;
+}
+
+.hero h1 span {
+    color: var(--primary);
+}
+
+.hero p {
+    max-width: 480px;
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.primary-button {
+    display: inline-block;
+    padding: 15px 25px;
+    background: var(--primary);
+    color: white;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    transition: 0.3s;
+}
+
+/* =====================================
+   CATÁLOGO
+===================================== */
+
+.catalog-section {
+    padding: 85px 7%;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.section-heading h2 {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+#searchGame {
+    width: 280px;
+    padding: 14px 17px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    font-size: 13px;
+}
+
+#searchGame:focus {
+    border-color: var(--primary);
+}
+
+#searchGame::placeholder {
+    color: #777f91;
+}
+
+/* =====================================
+   FILTROS
+===================================== */
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 35px;
+}
+
+.filter {
+    padding: 11px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.filter:hover,
+.filter.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* =====================================
+   TARJETAS DE VIDEOJUEGOS
+===================================== */
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.game-card {
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.game-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--primary);
+}
+
+.game-card img {
+    display: block;
+    width: 100%;
+    height: 210px;
+    object-fit: cover;
+    background: var(--surface-light);
+}
+
+.game-info {
+    padding: 18px;
+}
+
+.game-info h3 {
+    font-size: 16px;
+    margin-bottom: 9px;
+}
+
+.game-info p {
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.game-price {
+    display: block;
+    margin-top: 15px;
+    color: #a995ff;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.loading-message,
+.error-message,
+.empty-message {
+    grid-column: 1 / -1;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 45px 15px;
+}
+
+/* =====================================
+   PIE DE PÁGINA
+===================================== */
+
+.footer {
+    min-height: 120px;
+    padding: 30px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #0d1019;
+    border-top: 1px solid var(--border);
+}
+
+.footer p {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* =====================================
+   DISEÑO RESPONSIVE
+===================================== */
+
+@media (max-width: 1000px) {
+    .games-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .header {
+        padding: 0 4%;
+    }
+}
+
+@media (max-width: 750px) {
+    .header {
+        padding: 18px 5%;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .navigation {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 22px;
+    }
+
+    .header-actions {
+        gap: 7px;
+    }
+
+    .login-button,
+    .register-button {
+        padding: 9px 11px;
+        font-size: 11px;
+    }
+
+    .hero {
+        min-height: 430px;
+        padding: 75px 7%;
+    }
+
+    .hero h1 {
+        letter-spacing: -2px;
+    }
+
+    .catalog-section {
+        padding: 60px 5%;
+    }
+
+    .section-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    #searchGame {
+        width: 100%;
+    }
+
+    .games-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .game-card img {
+        height: 170px;
+    }
+
+    .footer {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 450px) {
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .game-card img {
+        height: 220px;
+    }
+
+    .navigation {
+        gap: 15px;
+    }
+
+    .navigation a {
+        font-size: 12px;
+    }
+}
+
+/* Imagen visual provisional de las tarjetas */
+.game-art {
+    height: 190px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background:
+        radial-gradient(circle at 50% 40%, #7657ff55, transparent 60%),
+        linear-gradient(135deg, #242044, #111522);
+    color: white;
+    font-size: 21px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.game-info h3 {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 750px) {
+    .game-art {
+        height: 160px;
+        font-size: 17px;
+    }
+}
+
+
+/* TARJETAS INTERACTIVAS */
+.game-card {
+    cursor: pointer;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    border-color: #7952ff;
+}
+
+.view-details {
+    display: block;
+    margin-top: 12px;
+    color: #7952ff;
+    font-weight: bold;
+}
+
+/* VENTANA DE DETALLES */
+.game-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-modal.show {
+    display: flex;
+}
+
+.game-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #121522;
+    border: 1px solid #34364c;
+    border-radius: 15px;
+    color: white;
+    padding: 25px;
+    animation: modalAppear 0.25s ease;
+}
+
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+}
+
+.detail-art {
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #443080, #17182a);
+    border-radius: 10px;
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 900;
+    text-align: center;
+    padding: 20px;
+}
+
+.detail-label {
+    color: #9878ff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.detail-info h2 {
+    font-size: 28px;
+    margin: 12px 0 20px;
+}
+
+.detail-info p {
+    color: #b9bfd0;
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+
+.detail-info strong {
+    color: white;
+}
+
+.detail-price {
+    color: #9878ff;
+    font-size: 27px;
+    font-weight: bold;
+    margin: 22px 0;
+}
+
+.detail-button {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    background: #7952ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.detail-button:hover {
+    background: #6540e8;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ADAPTACIÓN A MÓVILES */
+@media (max-width: 600px) {
+    .game-modal-content {
+        padding: 18px;
+    }
+
+    .detail-art {
+        min-height: 140px;
+        font-size: 22px;
+    }
+
+    .detail-info h2 {
+        font-size: 23px;
+    }
+}
+
+
+/* =====================================
+   FICHA INDIVIDUAL DEL VIDEOJUEGO
+===================================== */
+
+.detail-page {
+    min-height: 65vh;
+    padding: 55px 7%;
+    background: #090a10;
+}
+
+.back-link {
+    display: inline-block;
+    color: #a9b4cc;
+    text-decoration: none;
+    margin-bottom: 35px;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: #7953ff;
+}
+
+.game-detail {
+    display: grid;
+    grid-template-columns: minmax(250px, 0.9fr) 1.3fr;
+    gap: 55px;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 35px;
+    background: #11141f;
+    border: 1px solid #292d40;
+    border-radius: 18px;
+}
+
+.detail-art {
+    min-height: 390px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    border-radius: 14px;
+    background:
+        radial-gradient(circle at center, #49318c 0%, #211d40 48%, #121522 100%);
+    border: 1px solid #5940a8;
+    text-align: center;
+}
+
+.detail-art span {
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.detail-label {
+    color: #9474ff;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.detail-information h1 {
+    color: #ffffff;
+    font-size: 38px;
+    margin: 15px 0 8px;
+}
+
+.detail-genre {
+    color: #a88cff;
+    font-weight: 700;
+}
+
+.detail-divider {
+    height: 1px;
+    background: #303449;
+    margin: 25px 0;
+}
+
+.detail-information h3 {
+    color: #ffffff;
+    margin-bottom: 12px;
+}
+
+.detail-description {
+    color: #aeb8cc;
+    line-height: 1.8;
+}
+
+.detail-data {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+    margin: 30px 0;
+}
+
+.detail-data div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.detail-data span {
+    color: #8993aa;
+    font-size: 13px;
+}
+
+.detail-data strong {
+    color: #ffffff;
+}
+
+.detail-purchase {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 25px;
+}
+
+.detail-price {
+    color: #a88cff;
+    font-size: 27px;
+    font-weight: 900;
+}
+
+.detail-button {
+    display: inline-block;
+    padding: 14px 23px;
+    border: none;
+    border-radius: 9px;
+    background: #7953ff;
+    color: #ffffff;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.detail-button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.detail-note {
+    margin-top: 15px;
+    color: #8993aa;
+    font-size: 12px;
+}
+
+.detail-message {
+    text-align: center;
+    padding: 80px 20px;
+    color: #aeb8cc;
+}
+
+.detail-message h2 {
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+.detail-message .detail-button {
+    margin-top: 20px;
+}
+
+@media (max-width: 700px) {
+    .detail-page {
+        padding: 35px 5%;
+    }
+
+    .game-detail {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 20px;
+    }
+
+    .detail-art {
+        min-height: 260px;
+    }
+
+    .detail-information h1 {
+        font-size: 29px;
+    }
+
+    .detail-purchase {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .navigation {
+        gap: 10px;
+    }
+}
+
+
+.game-detail-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #a88cff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.game-detail-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* =====================================
+   AJUSTES DEL ENCABEZADO Y DETALLE
+===================================== */
+
+/* Encabezado compartido por todas las páginas */
+.header {
+    width: 100%;
+    min-height: 82px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0d1019;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.login-button,
+.register-button {
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.login-button {
+    border: 1px solid var(--border);
+    color: white;
+}
+
+.login-button:hover {
+    border-color: var(--primary);
+}
+
+.register-button {
+    background: var(--primary);
+    color: white;
+}
+
+.register-button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+/* Contenedor de la ficha */
+.game-detail-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 750px) {
+    .header {
+        padding: 18px 5%;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .navigation {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 22px;
+    }
+
+    .header-actions {
+        gap: 7px;
+    }
+
+    .login-button,
+    .register-button {
+        padding: 9px 11px;
+        font-size: 11px;
+    }
+}
+
+/* =====================================
+   COMPATIBILIDAD DE CLASES DEL HEADER
+===================================== */
+
+.navbar,
+.header {
+    width: 100%;
+    min-height: 82px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #0d1019;
+    border-bottom: 1px solid #292f40;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-actions,
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-login,
+.login-button {
+    padding: 11px 18px;
+    border: 1px solid #292f40;
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.btn-register,
+.register-button {
+    padding: 11px 18px;
+    border-radius: 8px;
+    background: #7657ff;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.btn-register:hover,
+.register-button:hover {
+    background: #6242ed;
+}
+
+@media (max-width: 750px) {
+    .navbar,
+    .header {
+        padding: 18px 5%;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .nav-actions,
+    .header-actions {
+        gap: 7px;
+    }
+}
