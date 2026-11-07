@@ -53,12 +53,11 @@ async function deleteUser(req, res, next) {
 async function login(req, res, next) {
     try {
         const { email, password } = req.body;
-        const user = await usersService.login(email, password);
 
-        res.status(200).json({
-            message: 'Inicio de sesión exitoso.',
-            user
-        });
+        const result = await usersService.login(email, password);
+
+        res.status(200).json(result);
+
     } catch (error) {
         next(error);
     }
