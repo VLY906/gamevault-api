@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inicia sesión en GameVault y descubre tus videojuegos favoritos.">
+    <title>Iniciar sesión | GameVault</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">
+            GAME<span>VAULT</span>
+        </a>
+
+        <nav class="navigation">
+            <a href="index.html">Inicio</a>
+            <a href="index.html#catalogo">Catálogo</a>
+            <a href="index.html#categorias">Categorías</a>
+        </nav>
+
+        <div class="header-actions">
+            <a href="register.html" class="register-button">
+                Registrarse
+            </a>
+        </div>
+    </header>
+
+    <main class="auth-page">
+        <section class="auth-card">
+
+            <span class="eyebrow">BIENVENIDO DE NUEVO</span>
+
+            <h1>Iniciar sesión</h1>
+
+            <p class="auth-description">
+                Accede a tu cuenta y continúa descubriendo
+                tus videojuegos favoritos.
+            </p>
+
+            <form id="loginForm" class="auth-form">
+
+                <div class="form-group">
+                    <label for="loginEmail">Correo electrónico</label>
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        name="email"
+                        placeholder="ejemplo@correo.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña</label>
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="password"
+                        placeholder="Ingresa tu contraseña"
+                        autocomplete="current-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <div id="loginMessage" class="form-message"
+                     role="status" aria-live="polite"></div>
+
+                <button type="submit" class="auth-submit">
+                    Iniciar sesión
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                ¿No tienes una cuenta?
+                <a href="register.html">Regístrate aquí</a>
+            </p>
+
+            <a href="index.html" class="back-link">
+                ← Volver al inicio
+            </a>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a href="index.html" class="logo">
+            GAME<span>VAULT</span>
+        </a>
+        <p>© 2026 GameVault. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/auth.js" defer></script>
+</body>
+</html>

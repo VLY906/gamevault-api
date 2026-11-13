@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Crea tu cuenta gratuita en GameVault.">
+    <title>Crear cuenta | GameVault</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <header class="header">
+        <a href="index.html" class="logo">
+            GAME<span>VAULT</span>
+        </a>
+
+        <nav class="navigation">
+            <a href="index.html">Inicio</a>
+            <a href="index.html#catalogo">Catálogo</a>
+            <a href="index.html#categorias">Categorías</a>
+        </nav>
+
+        <div class="header-actions">
+            <a href="login.html" class="login-button">
+                Iniciar sesión
+            </a>
+        </div>
+    </header>
+
+    <main class="auth-page">
+        <section class="auth-card">
+
+            <span class="eyebrow">ÚNETE A GAMEVAULT</span>
+
+            <h1>Crear cuenta</h1>
+
+            <p class="auth-description">
+                Regístrate y comienza a descubrir
+                tus videojuegos favoritos.
+            </p>
+
+            <form id="registerForm" class="auth-form">
+
+                <div class="form-group">
+                    <label for="registerName">Nombre completo</label>
+                    <input
+                        type="text"
+                        id="registerName"
+                        name="name"
+                        placeholder="Tu nombre"
+                        autocomplete="name"
+                        minlength="2"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">Correo electrónico</label>
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        name="email"
+                        placeholder="ejemplo@correo.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña</label>
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        name="password"
+                        placeholder="Mínimo 8 caracteres"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar contraseña</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Repite tu contraseña"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                    >
+                </div>
+
+                <div id="registerMessage"
+                     class="form-message"
+                     role="status"
+                     aria-live="polite"></div>
+
+                <button type="submit" class="auth-submit">
+                    Crear cuenta
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                ¿Ya tienes una cuenta?
+                <a href="login.html">Inicia sesión</a>
+            </p>
+
+            <a href="index.html" class="back-link">
+                ← Volver al inicio
+            </a>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a href="index.html" class="logo">
+            GAME<span>VAULT</span>
+        </a>
+
+        <p>© 2026 GameVault. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/auth.js" defer></script>
+</body>
+</html>
