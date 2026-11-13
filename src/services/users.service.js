@@ -1,5 +1,6 @@
 const usersRepository = require('../repositories/users.repository');
 const jwt = require('jsonwebtoken');
+const { hashPassword, verifyPassword } = require('../utils/password.util');
 
 // Obtener todos los usuarios
 async function getAllUsers() {
@@ -59,7 +60,7 @@ async function createUser(userData) {
     const newUser = {
         name: name.trim(),
         email: normalizedEmail,
-        password,
+        password: await hashPassword(password),
         role: role || 'user'
     };
 
@@ -120,7 +121,7 @@ async function updateUser(id, userData) {
     return await usersRepository.update(id, {
         name: name.trim(),
         email: normalizedEmail,
-        password,
+        password: await hashPassword(password),
         role
     });
 }
@@ -153,11 +154,11 @@ async function login(email, password) {
         String(email).trim().toLowerCase()
     );
 
-    if (!user || user.password !== password) {
-        const error = new Error('Credenciales incorrectas');
-        error.statusCode = 401;
-        throw error;
-    }
+    if (!user || !(await verifyPassword(password, user.password))) {
+    const error = new Error('Credenciales incorrectas');
+    error.statusCode = 401;
+    throw error;
+}
 
     const token = jwt.sign(
         {
